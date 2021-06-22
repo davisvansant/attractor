@@ -2,6 +2,7 @@ use crate::Attractor;
 
 use std::path::{Path, PathBuf};
 
+use tokio::fs::create_dir_all;
 use tokio::process::Command;
 
 async fn get_full_path() -> Result<PathBuf, std::io::Error> {
@@ -41,6 +42,14 @@ async fn install(path: &Path) -> Result<bool, std::io::Error> {
     Ok(command.success())
 }
 
+async fn filesystem() -> Result<(), std::io::Error> {
+    let dir = "/var/opt/attractor/";
+
+    create_dir_all(dir).await?;
+
+    Ok(())
+}
+
 impl Attractor {
     pub async fn prep() -> Result<(), std::io::Error> {
         let full_path = crate::init::get_full_path().await?;
@@ -50,6 +59,8 @@ impl Attractor {
             crate::init::update(&full_path).await?;
             crate::init::install(&full_path).await?;
         }
+
+        filesystem().await?;
 
         Ok(())
     }
@@ -90,6 +101,14 @@ mod tests {
             crate::init::update(test_path).await?;
             assert!(crate::init::install(test_path).await?);
         }
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn filesystem() -> Result<(), std::io::Error> {
+        crate::init::filesystem().await?;
+        let test_metadata = tokio::fs::metadata("/var/opt/attractor/").await?;
+        assert!(test_metadata.is_dir());
         Ok(())
     }
 }
