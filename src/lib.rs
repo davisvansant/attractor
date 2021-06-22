@@ -1,8 +1,11 @@
+mod init;
+
 pub struct Attractor {}
 
 impl Attractor {
-    pub async fn init() -> Attractor {
-        Attractor {}
+    pub async fn init() -> Result<Attractor, std::io::Error> {
+        Self::prep().await?;
+        Ok(Attractor {})
     }
 }
 
@@ -11,7 +14,8 @@ mod tests {
     use super::*;
 
     #[tokio::test(flavor = "multi_thread")]
-    async fn init() {
-        Attractor::init().await;
+    async fn init() -> Result<(), std::io::Error> {
+        Attractor::init().await?;
+        Ok(())
     }
 }
