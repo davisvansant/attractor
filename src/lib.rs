@@ -1,5 +1,6 @@
 mod bootstrap;
 mod init;
+mod install;
 
 enum Suite {
     Buster,
@@ -61,6 +62,11 @@ impl Attractor {
 
     pub async fn bootstrap(&self) -> Result<(), std::io::Error> {
         Self::run_bootrap().await?;
+        Ok(())
+    }
+
+    pub async fn install(&self) -> Result<(), std::io::Error> {
+        Self::run_install().await?;
         Ok(())
     }
 }
