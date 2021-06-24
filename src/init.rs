@@ -15,15 +15,15 @@ async fn get_full_path() -> Result<PathBuf, std::io::Error> {
     Ok(path_buf)
 }
 
-async fn check(path: &Path) -> Result<bool, std::io::Error> {
-    let command = Command::new(path)
-        .arg("-s")
-        .arg("debootstrap")
-        .status()
-        .await?;
-
-    Ok(command.success())
-}
+// async fn check(path: &Path) -> Result<bool, std::io::Error> {
+//     let command = Command::new(path)
+//         .arg("-s")
+//         .arg("debootstrap")
+//         .status()
+//         .await?;
+//
+//     Ok(command.success())
+// }
 
 async fn update(path: &Path) -> Result<bool, std::io::Error> {
     let command = Command::new(path).arg("update").status().await?;
@@ -43,7 +43,7 @@ async fn install(path: &Path) -> Result<bool, std::io::Error> {
 }
 
 async fn filesystem() -> Result<(), std::io::Error> {
-    let dir = "/var/opt/attractor/";
+    let dir = "/var/opt/attractor/target";
 
     create_dir_all(dir).await?;
 
@@ -53,12 +53,14 @@ async fn filesystem() -> Result<(), std::io::Error> {
 impl Attractor {
     pub async fn prep() -> Result<(), std::io::Error> {
         let full_path = crate::init::get_full_path().await?;
-        let check = crate::init::check(&full_path).await?;
-
-        if !check {
-            crate::init::update(&full_path).await?;
-            crate::init::install(&full_path).await?;
-        }
+        // let check = crate::init::check(&full_path).await?;
+        //
+        // if !check {
+        //     crate::init::update(&full_path).await?;
+        //     crate::init::install(&full_path).await?;
+        // }
+        crate::init::update(&full_path).await?;
+        crate::init::install(&full_path).await?;
 
         filesystem().await?;
 
@@ -77,13 +79,13 @@ mod tests {
         Ok(())
     }
 
-    #[tokio::test(flavor = "multi_thread")]
-    async fn check() -> Result<(), std::io::Error> {
-        let test_path = Path::new("/usr/bin/dpkg");
-        let test_check = crate::init::check(test_path).await?;
-        assert!(!test_check);
-        Ok(())
-    }
+    // #[tokio::test(flavor = "multi_thread")]
+    // async fn check() -> Result<(), std::io::Error> {
+    //     let test_path = Path::new("/usr/bin/dpkg");
+    //     let test_check = crate::init::check(test_path).await?;
+    //     assert!(test_check);
+    //     Ok(())
+    // }
 
     #[tokio::test(flavor = "multi_thread")]
     async fn update() -> Result<(), std::io::Error> {
@@ -107,8 +109,10 @@ mod tests {
     #[tokio::test(flavor = "multi_thread")]
     async fn filesystem() -> Result<(), std::io::Error> {
         crate::init::filesystem().await?;
-        let test_metadata = tokio::fs::metadata("/var/opt/attractor/").await?;
-        assert!(test_metadata.is_dir());
+        let test_metadata_root = tokio::fs::metadata("/var/opt/attractor/").await?;
+        assert!(test_metadata_root.is_dir());
+        let test_metadata_target = tokio::fs::metadata("/var/opt/attractor/target").await?;
+        assert!(test_metadata_target.is_dir());
         Ok(())
     }
 }
