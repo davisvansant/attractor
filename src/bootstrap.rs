@@ -55,7 +55,7 @@ async fn make_tarball(variant: Variant, code_name: Suite) -> Result<bool, std::i
 }
 
 impl Attractor {
-    pub(crate) async fn run() -> Result<(), std::io::Error> {
+    pub(crate) async fn run_bootrap() -> Result<(), std::io::Error> {
         make_tarball(Variant::Minbase, Suite::Buster).await?;
         make_tarball(Variant::Buildd, Suite::Buster).await?;
         Ok(())

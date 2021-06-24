@@ -5,12 +5,12 @@ pub struct Attractor {}
 
 impl Attractor {
     pub async fn init() -> Result<Attractor, std::io::Error> {
-        Self::prep().await?;
+        Self::run_init().await?;
         Ok(Attractor {})
     }
 
     pub async fn bootstrap(&self) -> Result<(), std::io::Error> {
-        Self::run().await?;
+        Self::run_bootrap().await?;
         Ok(())
     }
 }
