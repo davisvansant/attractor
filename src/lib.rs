@@ -1,6 +1,24 @@
 mod bootstrap;
 mod init;
 
+enum Suite {
+    Buster,
+    _Focal,
+    _Bionic,
+    _Xenial,
+}
+
+impl Suite {
+    pub(crate) async fn kind(&self) -> &str {
+        match self {
+            Buster => "buster",
+            _Focal => "focal",
+            _Bionic => "bionic",
+            _Xenial => "xenial",
+        }
+    }
+}
+
 pub struct Attractor {}
 
 impl Attractor {

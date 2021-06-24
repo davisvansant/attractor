@@ -1,4 +1,4 @@
-use crate::Attractor;
+use crate::{Attractor, Suite};
 
 use tokio::process::Command;
 
@@ -6,13 +6,6 @@ enum Variant {
     Minbase,
     Buildd,
     _Fakechroot,
-}
-
-enum Suite {
-    Buster,
-    _Focal,
-    _Bionic,
-    _Xenial,
 }
 
 async fn make_tarball(variant: Variant, code_name: Suite) -> Result<bool, std::io::Error> {
@@ -34,19 +27,13 @@ async fn make_tarball(variant: Variant, code_name: Suite) -> Result<bool, std::i
         }
     };
 
-    let code_name = match code_name {
-        Suite::Buster => "buster",
-        Suite::_Focal => "focal",
-        Suite::_Bionic => "bionic",
-        Suite::_Xenial => "xenial",
-    };
-
+    let code_name_kind = code_name.kind().await;
     let target = "/var/opt/attractor/target";
     let command = Command::new("/usr/sbin/debootstrap")
         .current_dir("/var/opt/attractor")
         .arg(variant)
         .arg(make_tarball)
-        .arg(code_name)
+        .arg(code_name_kind)
         .arg(target)
         .status()
         .await?;
