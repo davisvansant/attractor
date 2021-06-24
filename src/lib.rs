@@ -11,10 +11,10 @@ enum Suite {
 impl Suite {
     pub(crate) async fn kind(&self) -> &str {
         match self {
-            Buster => "buster",
-            _Focal => "focal",
-            _Bionic => "bionic",
-            _Xenial => "xenial",
+            Suite::Buster => "buster",
+            Suite::_Focal => "focal",
+            Suite::_Bionic => "bionic",
+            Suite::_Xenial => "xenial",
         }
     }
 }
