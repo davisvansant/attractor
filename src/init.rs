@@ -1,20 +1,18 @@
-use crate::Attractor;
+use crate::{Attractor, Utility};
 
 use std::path::{Path, PathBuf};
 
 use tokio::fs::create_dir_all;
 use tokio::process::Command;
 
-enum Utility {
-    AptGet,
-}
-
 async fn get_full_path(utility: Utility) -> Result<PathBuf, std::io::Error> {
-    let utility = match utility {
-        Utility::AptGet => "apt-get",
-    };
+    let utility_name = utility.name().await;
+    let command = Command::new("/usr/bin/which")
+        .arg(utility_name)
+        .output()
+        .await?;
+
     let mut path_buf = PathBuf::with_capacity(15);
-    let command = Command::new("/usr/bin/which").arg(utility).output().await?;
     let string = String::from_utf8(command.stdout).expect("Failed to convert to String!");
 
     path_buf.push(string.trim());

@@ -20,6 +20,18 @@ impl Suite {
     }
 }
 
+enum Utility {
+    AptGet,
+}
+
+impl Utility {
+    async fn name(&self) -> &str {
+        match self {
+            Utility::AptGet => "apt-get",
+        }
+    }
+}
+
 enum Variant {
     Minbase,
     Buildd,
