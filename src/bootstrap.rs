@@ -1,37 +1,15 @@
-use crate::{Attractor, Suite};
+use crate::{Attractor, Suite, Variant};
 
 use tokio::process::Command;
 
-enum Variant {
-    Minbase,
-    Buildd,
-    _Fakechroot,
-}
-
 async fn make_tarball(variant: Variant, code_name: Suite) -> Result<bool, std::io::Error> {
-    let (variant, make_tarball) = match variant {
-        Variant::Minbase => {
-            let variant = "--variant=minbase";
-            let make_tarball = "--make-tarball=/var/opt/attractor/minbase.tar.gz";
-            (variant, make_tarball)
-        }
-        Variant::Buildd => {
-            let variant = "--variant=buildd";
-            let make_tarball = "--make-tarball=/var/opt/attractor/buildd.tar.gz";
-            (variant, make_tarball)
-        }
-        Variant::_Fakechroot => {
-            let variant = "--variant=fakechroot";
-            let make_tarball = "--make-tarball=/var/opt/attractor/fakechroot.tar.gz";
-            (variant, make_tarball)
-        }
-    };
-
+    let variant_kind = variant.kind().await;
+    let make_tarball = variant.make_tarball().await;
     let code_name_kind = code_name.kind().await;
     let target = "/var/opt/attractor/target";
     let command = Command::new("/usr/sbin/debootstrap")
         .current_dir("/var/opt/attractor")
-        .arg(variant)
+        .arg(variant_kind)
         .arg(make_tarball)
         .arg(code_name_kind)
         .arg(target)

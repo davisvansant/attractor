@@ -19,6 +19,38 @@ impl Suite {
     }
 }
 
+enum Variant {
+    Minbase,
+    Buildd,
+    _Fakechroot,
+}
+
+impl Variant {
+    async fn kind(&self) -> &str {
+        match self {
+            Variant::Minbase => "--variant=minbase",
+            Variant::Buildd => "--variant=buildd",
+            Variant::_Fakechroot => "--variant=fakechroot",
+        }
+    }
+
+    async fn make_tarball(&self) -> &str {
+        match self {
+            Variant::Minbase => "--make-tarball=/var/opt/attractor/minbase.tar.gz",
+            Variant::Buildd => "--make-tarball=/var/opt/attractor/buildd.tar.gz",
+            Variant::_Fakechroot => "--make-tarball=/var/opt/attractor/fakechroot.tar.gz",
+        }
+    }
+
+    async fn unpack_tarball(&self) -> &str {
+        match self {
+            Variant::Minbase => "--unpack-tarball=/var/opt/attractor/minbase.tar.gz",
+            Variant::Buildd => "--unpack-tarball=/var/opt/attractor/buildd.tar.gz",
+            Variant::_Fakechroot => "--unpack-tarball=/var/opt/attractor/fakechroot.tar.gz",
+        }
+    }
+}
+
 pub struct Attractor {}
 
 impl Attractor {
