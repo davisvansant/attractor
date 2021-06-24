@@ -9,7 +9,7 @@ enum Suite {
 }
 
 impl Suite {
-    pub(crate) async fn kind(&self) -> &str {
+    async fn kind(&self) -> &str {
         match self {
             Suite::Buster => "buster",
             Suite::_Focal => "focal",
