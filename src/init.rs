@@ -11,7 +11,7 @@ enum Utility {
 
 async fn get_full_path(utility: Utility) -> Result<PathBuf, std::io::Error> {
     let utility = match utility {
-        Utility::AptGet => String::from("apt-get"),
+        Utility::AptGet => "apt-get",
     };
     let mut path_buf = PathBuf::with_capacity(15);
     let command = Command::new("/usr/bin/which").arg(utility).output().await?;

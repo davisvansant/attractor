@@ -18,31 +18,30 @@ enum Suite {
 async fn make_tarball(variant: Variant, code_name: Suite) -> Result<bool, std::io::Error> {
     let (variant, make_tarball) = match variant {
         Variant::Minbase => {
-            let variant = String::from("--variant=minbase");
-            let make_tarball = String::from("--make-tarball=/var/opt/attractor/minbase.tar.gz");
+            let variant = "--variant=minbase";
+            let make_tarball = "--make-tarball=/var/opt/attractor/minbase.tar.gz";
             (variant, make_tarball)
         }
         Variant::Buildd => {
-            let variant = String::from("--variant=buildd");
-            let make_tarball = String::from("--make-tarball=/var/opt/attractor/buildd.tar.gz");
+            let variant = "--variant=buildd";
+            let make_tarball = "--make-tarball=/var/opt/attractor/buildd.tar.gz";
             (variant, make_tarball)
         }
         Variant::_Fakechroot => {
-            let variant = String::from("--variant=fakechroot");
-            let make_tarball = String::from("--make-tarball=/var/opt/attractor/fakechroot.tar.gz");
+            let variant = "--variant=fakechroot";
+            let make_tarball = "--make-tarball=/var/opt/attractor/fakechroot.tar.gz";
             (variant, make_tarball)
         }
     };
 
     let code_name = match code_name {
-        Suite::Buster => String::from("buster"),
-        Suite::_Focal => String::from("focal"),
-        Suite::_Bionic => String::from("bionic"),
-        Suite::_Xenial => String::from("xenial"),
+        Suite::Buster => "buster",
+        Suite::_Focal => "focal",
+        Suite::_Bionic => "bionic",
+        Suite::_Xenial => "xenial",
     };
 
     let target = "/var/opt/attractor/target";
-    // let target = "./target";
     let command = Command::new("/usr/sbin/debootstrap")
         .current_dir("/var/opt/attractor")
         .arg(variant)
