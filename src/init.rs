@@ -48,7 +48,7 @@ async fn filesystem() -> Result<(), std::io::Error> {
 }
 
 impl Attractor {
-    pub async fn prep() -> Result<(), std::io::Error> {
+    pub(crate) async fn prep() -> Result<(), std::io::Error> {
         let apt_get = crate::init::get_full_path(Utility::AptGet).await?;
 
         crate::init::update(&apt_get).await?;
