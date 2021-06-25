@@ -23,11 +23,65 @@ impl Utility {
 
         Ok(std::ffi::OsString::from(string.trim()))
     }
+
+    pub async fn update(&self) -> Result<bool, std::io::Error> {
+        match self {
+            Utility::AptGet => {
+                let command_path = self.path().await?;
+                let command = Command::new(command_path).arg("update").status().await?;
+                Ok(command.success())
+            }
+            Utility::Debootstrap => {
+                println!("Utility - debootstrap cannot run update!");
+                Ok(false)
+            }
+        }
+    }
+
+    pub async fn install(&self) -> Result<bool, std::io::Error> {
+        match self {
+            Utility::AptGet => {
+                println!("Utility - apt-get is already installed!");
+                Ok(false)
+            }
+            Utility::Debootstrap => {
+                let command_path = Utility::AptGet.path().await?;
+                let command = Command::new(command_path)
+                    .arg("install")
+                    .arg("debootstrap")
+                    .arg("-y")
+                    .status()
+                    .await?;
+
+                Ok(command.success())
+            }
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn apt_get_update_and_install() -> Result<(), std::io::Error> {
+        let test_utility = Utility::AptGet;
+        let test_apt_get_update = test_utility.update().await?;
+        assert!(test_apt_get_update);
+        let test_apt_get_install = test_utility.install().await?;
+        assert!(!test_apt_get_install);
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn debootstrap_update_and_install() -> Result<(), std::io::Error> {
+        let test_utility = Utility::Debootstrap;
+        let test_debootstrap_update = test_utility.update().await?;
+        assert!(!test_debootstrap_update);
+        let test_debootstrap_install = test_utility.install().await?;
+        assert!(test_debootstrap_install);
+        Ok(())
+    }
 
     #[tokio::test(flavor = "multi_thread")]
     async fn utility_apt_get_name() -> Result<(), std::io::Error> {
