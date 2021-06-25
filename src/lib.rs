@@ -1,26 +1,11 @@
 mod bootstrap;
 mod init;
 mod install;
+mod suite;
+
+pub use suite::Suite;
 
 use tokio::process::Command;
-
-enum Suite {
-    Buster,
-    _Focal,
-    _Bionic,
-    _Xenial,
-}
-
-impl Suite {
-    async fn kind(&self) -> &str {
-        match self {
-            Suite::Buster => "buster",
-            Suite::_Focal => "focal",
-            Suite::_Bionic => "bionic",
-            Suite::_Xenial => "xenial",
-        }
-    }
-}
 
 enum Utility {
     AptGet,
