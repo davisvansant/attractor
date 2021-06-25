@@ -3,9 +3,28 @@ use crate::{Attractor, Utility};
 use tokio::fs::create_dir_all;
 
 async fn filesystem() -> Result<(), std::io::Error> {
-    let dir = "/var/opt/attractor/target";
+    let dirs = vec![
+        "/var/opt/attractor/",
+        "/var/opt/attractor/minbase",
+        "/var/opt/attractor/buildd",
+        "/var/opt/attractor/fakechroot",
+        "/var/opt/attractor/minbase/buster",
+        "/var/opt/attractor/minbase/focal",
+        "/var/opt/attractor/minbase/bionic",
+        "/var/opt/attractor/minbase/xenial",
+        "/var/opt/attractor/buildd/buster",
+        "/var/opt/attractor/buildd/focal",
+        "/var/opt/attractor/buildd/xenial",
+        "/var/opt/attractor/fakechroot/buster",
+        "/var/opt/attractor/fakechroot/focal",
+        "/var/opt/attractor/fakechroot/bionic",
+        "/var/opt/attractor/fakechroot/xenial",
+        "/var/opt/attractor/target",
+    ];
 
-    create_dir_all(dir).await?;
+    for dir in dirs {
+        create_dir_all(dir).await?;
+    }
 
     Ok(())
 }
@@ -29,11 +48,29 @@ mod tests {
 
     #[tokio::test(flavor = "multi_thread")]
     async fn filesystem() -> Result<(), std::io::Error> {
+        let test_dirs = vec![
+            "/var/opt/attractor/",
+            "/var/opt/attractor/minbase",
+            "/var/opt/attractor/buildd",
+            "/var/opt/attractor/fakechroot",
+            "/var/opt/attractor/minbase/buster",
+            "/var/opt/attractor/minbase/focal",
+            "/var/opt/attractor/minbase/bionic",
+            "/var/opt/attractor/minbase/xenial",
+            "/var/opt/attractor/buildd/buster",
+            "/var/opt/attractor/buildd/focal",
+            "/var/opt/attractor/buildd/xenial",
+            "/var/opt/attractor/fakechroot/buster",
+            "/var/opt/attractor/fakechroot/focal",
+            "/var/opt/attractor/fakechroot/bionic",
+            "/var/opt/attractor/fakechroot/xenial",
+            "/var/opt/attractor/target",
+        ];
         crate::init::filesystem().await?;
-        let test_metadata_root = tokio::fs::metadata("/var/opt/attractor/").await?;
-        assert!(test_metadata_root.is_dir());
-        let test_metadata_target = tokio::fs::metadata("/var/opt/attractor/target").await?;
-        assert!(test_metadata_target.is_dir());
+        for dir in test_dirs {
+            let test_metadata_target = tokio::fs::metadata(dir).await?;
+            assert!(test_metadata_target.is_dir());
+        }
         Ok(())
     }
 }
