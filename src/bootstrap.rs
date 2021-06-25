@@ -1,4 +1,4 @@
-use crate::{Attractor, Suite, Variant};
+use crate::{Attractor, Suite, Utility, Variant};
 
 use tokio::process::Command;
 
@@ -7,7 +7,8 @@ async fn make_tarball(variant: Variant, code_name: Suite) -> Result<bool, std::i
     let make_tarball = variant.make_tarball().await;
     let code_name_kind = code_name.kind().await;
     let target = "/var/opt/attractor/target";
-    let command = Command::new("/usr/sbin/debootstrap")
+    let command_path = Utility::Debootstrap.path().await?;
+    let command = Command::new(&command_path)
         .current_dir("/var/opt/attractor")
         .arg(variant_kind)
         .arg(make_tarball)
