@@ -1,33 +1,18 @@
 use crate::{Attractor, Utility};
 
-use std::path::{Path, PathBuf};
-
 use tokio::fs::create_dir_all;
 use tokio::process::Command;
 
-async fn get_full_path(utility: Utility) -> Result<PathBuf, std::io::Error> {
-    let utility_name = utility.name().await;
-    let command = Command::new("/usr/bin/which")
-        .arg(utility_name)
-        .output()
-        .await?;
-
-    let mut path_buf = PathBuf::with_capacity(15);
-    let string = String::from_utf8(command.stdout).expect("Failed to convert to String!");
-
-    path_buf.push(string.trim());
-
-    Ok(path_buf)
-}
-
-async fn update(path: &Path) -> Result<bool, std::io::Error> {
-    let command = Command::new(path).arg("update").status().await?;
+async fn update(utility: &Utility) -> Result<bool, std::io::Error> {
+    let path = utility.path().await?;
+    let command = Command::new(&path).arg("update").status().await?;
 
     Ok(command.success())
 }
 
-async fn install(path: &Path) -> Result<bool, std::io::Error> {
-    let command = Command::new(path)
+async fn install(utility: &Utility) -> Result<bool, std::io::Error> {
+    let path = utility.path().await?;
+    let command = Command::new(&path)
         .arg("install")
         .arg("debootstrap")
         .arg("-y")
@@ -47,7 +32,7 @@ async fn filesystem() -> Result<(), std::io::Error> {
 
 impl Attractor {
     pub(crate) async fn run_init() -> Result<(), std::io::Error> {
-        let apt_get = crate::init::get_full_path(Utility::AptGet).await?;
+        let apt_get = Utility::AptGet;
 
         crate::init::update(&apt_get).await?;
         crate::init::install(&apt_get).await?;
@@ -62,16 +47,17 @@ impl Attractor {
 mod tests {
     use super::*;
 
-    #[tokio::test(flavor = "multi_thread")]
-    async fn get_full_path() -> Result<(), std::io::Error> {
-        let test_path_buf = crate::init::get_full_path(Utility::AptGet).await?;
-        assert_eq!(test_path_buf.to_str().unwrap(), "/usr/bin/apt-get");
-        Ok(())
-    }
+    // #[tokio::test(flavor = "multi_thread")]
+    // async fn get_full_path() -> Result<(), std::io::Error> {
+    //     let test_path_buf = crate::init::get_full_path(Utility::AptGet).await?;
+    //     assert_eq!(test_path_buf.to_str().unwrap(), "/usr/bin/apt-get");
+    //     Ok(())
+    // }
 
     #[tokio::test(flavor = "multi_thread")]
     async fn update_and_install() -> Result<(), std::io::Error> {
-        let test_utility = crate::init::get_full_path(Utility::AptGet).await?;
+        // let test_utility = crate::init::get_full_path(Utility::AptGet).await?;
+        let test_utility = Utility::AptGet;
         let test_update = crate::init::update(&test_utility).await?;
         assert!(test_update);
         let test_install = crate::init::install(&test_utility).await?;
