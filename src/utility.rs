@@ -48,7 +48,7 @@ impl Utility {
                 let command_path = Utility::AptGet.path().await?;
                 let command = Command::new(command_path)
                     .arg("install")
-                    .arg("debootstrap")
+                    .arg(self.name().await)
                     .arg("-y")
                     .status()
                     .await?;
