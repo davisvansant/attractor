@@ -45,8 +45,6 @@ impl Attractor {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[tokio::test(flavor = "multi_thread")]
     async fn filesystem() -> Result<(), std::io::Error> {
         let test_dirs = vec![
