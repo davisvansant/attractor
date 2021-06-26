@@ -5,6 +5,14 @@ pub enum Variant {
 }
 
 impl Variant {
+    pub async fn name(&self) -> &str {
+        match self {
+            Variant::Minbase => "minbase",
+            Variant::Buildd => "buildd",
+            Variant::_Fakechroot => "fakechroot",
+        }
+    }
+
     pub async fn kind(&self) -> &str {
         match self {
             Variant::Minbase => "--variant=minbase",
@@ -33,6 +41,27 @@ impl Variant {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn name_minbase() -> Result<(), std::io::Error> {
+        let test_variant = Variant::Minbase;
+        assert_eq!(test_variant.name().await, "minbase");
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn name_buildd() -> Result<(), std::io::Error> {
+        let test_variant = Variant::Buildd;
+        assert_eq!(test_variant.name().await, "buildd");
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn name_fakechroot() -> Result<(), std::io::Error> {
+        let test_variant = Variant::_Fakechroot;
+        assert_eq!(test_variant.name().await, "fakechroot");
+        Ok(())
+    }
 
     #[tokio::test(flavor = "multi_thread")]
     async fn kind_minbase() -> Result<(), std::io::Error> {
