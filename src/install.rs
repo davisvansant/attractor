@@ -2,7 +2,7 @@ use crate::{Attractor, Suite, Utility, Variant};
 
 use tokio::process::Command;
 
-async fn unpack_tarball(variant: Variant, suite: Suite) -> Result<(), std::io::Error> {
+async fn unpack_tarball(variant: Variant, suite: Suite) -> Result<bool, std::io::Error> {
     let unpack_tarball = variant.unpack_tarball().await;
     let name = variant.name().await;
     let code_name = suite.code_name().await;
@@ -15,7 +15,7 @@ async fn unpack_tarball(variant: Variant, suite: Suite) -> Result<(), std::io::E
         .arg(target)
         .status()
         .await?;
-    Ok(())
+    Ok(command.success())
 }
 
 impl Attractor {
