@@ -20,9 +20,8 @@ async fn unpack_tarball(variant: Variant, suite: Suite) -> Result<bool, std::io:
 
 impl Attractor {
     pub(crate) async fn run_install() -> Result<(), std::io::Error> {
-        let variant = Variant::Minbase;
-        let code_name = Suite::Buster;
-        unpack_tarball(variant, code_name).await?;
+        unpack_tarball(Variant::Minbase, Suite::Buster).await?;
+        unpack_tarball(Variant::Buildd, Suite::Buster).await?;
         Ok(())
     }
 }
