@@ -32,9 +32,10 @@ async fn filesystem() -> Result<(), std::io::Error> {
 impl Attractor {
     pub(crate) async fn run_init() -> Result<(), std::io::Error> {
         let apt_get = Utility::AptGet;
+        let debootstrap = Utility::Debootstrap;
 
         apt_get.update().await?;
-        apt_get.install().await?;
+        debootstrap.install().await?;
 
         filesystem().await?;
 
