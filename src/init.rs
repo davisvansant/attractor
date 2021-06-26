@@ -19,7 +19,7 @@ async fn filesystem() -> Result<(), std::io::Error> {
         "/var/opt/attractor/fakechroot/focal",
         "/var/opt/attractor/fakechroot/bionic",
         "/var/opt/attractor/fakechroot/xenial",
-        "/var/opt/attractor/target",
+        "/var/opt/attractor/tmp",
     ];
 
     for dir in dirs {
@@ -64,7 +64,7 @@ mod tests {
             "/var/opt/attractor/fakechroot/focal",
             "/var/opt/attractor/fakechroot/bionic",
             "/var/opt/attractor/fakechroot/xenial",
-            "/var/opt/attractor/target",
+            "/var/opt/attractor/tmp",
         ];
         crate::init::filesystem().await?;
         for dir in test_dirs {
