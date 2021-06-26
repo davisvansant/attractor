@@ -2,17 +2,18 @@ use crate::{Attractor, Suite, Utility, Variant};
 
 use tokio::process::Command;
 
-async fn make_tarball(variant: Variant, code_name: Suite) -> Result<bool, std::io::Error> {
-    let variant_kind = variant.kind().await;
+async fn make_tarball(variant: Variant, suite: Suite) -> Result<bool, std::io::Error> {
+    let name = variant.name().await;
+    let kind = variant.kind().await;
     let make_tarball = variant.make_tarball().await;
-    let code_name_kind = code_name.kind().await;
-    let target = "/var/opt/attractor/target";
+    let code_name = suite.code_name().await;
+    let target = "/var/opt/attractor/tmp".to_owned() + name + code_name;
     let command_path = Utility::Debootstrap.path().await?;
     let command = Command::new(&command_path)
         .current_dir("/var/opt/attractor")
-        .arg(variant_kind)
+        .arg(kind)
         .arg(make_tarball)
-        .arg(code_name_kind)
+        .arg(code_name)
         .arg(target)
         .status()
         .await?;
