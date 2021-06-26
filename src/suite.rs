@@ -6,7 +6,7 @@ pub enum Suite {
 }
 
 impl Suite {
-    pub async fn kind(&self) -> &str {
+    pub async fn code_name(&self) -> &str {
         match self {
             Suite::Buster => "buster",
             Suite::_Focal => "focal",
@@ -21,30 +21,30 @@ mod tests {
     use super::*;
 
     #[tokio::test(flavor = "multi_thread")]
-    async fn suite_kind_buster() -> Result<(), std::io::Error> {
-        let test_suite_buster = Suite::Buster;
-        assert_eq!(test_suite_buster.kind().await, "buster");
+    async fn code_name_buster() -> Result<(), std::io::Error> {
+        let test_suite = Suite::Buster;
+        assert_eq!(test_suite.code_name().await, "buster");
         Ok(())
     }
 
     #[tokio::test(flavor = "multi_thread")]
-    async fn suite_kind_focal() -> Result<(), std::io::Error> {
-        let test_suite_buster = Suite::_Focal;
-        assert_eq!(test_suite_buster.kind().await, "focal");
+    async fn code_name_focal() -> Result<(), std::io::Error> {
+        let test_suite = Suite::_Focal;
+        assert_eq!(test_suite.code_name().await, "focal");
         Ok(())
     }
 
     #[tokio::test(flavor = "multi_thread")]
-    async fn suite_kind_bionic() -> Result<(), std::io::Error> {
-        let test_suite_buster = Suite::_Bionic;
-        assert_eq!(test_suite_buster.kind().await, "bionic");
+    async fn code_name_bionic() -> Result<(), std::io::Error> {
+        let test_suite = Suite::_Bionic;
+        assert_eq!(test_suite.code_name().await, "bionic");
         Ok(())
     }
 
     #[tokio::test(flavor = "multi_thread")]
-    async fn suite_kind_xenial() -> Result<(), std::io::Error> {
-        let test_suite_buster = Suite::_Xenial;
-        assert_eq!(test_suite_buster.kind().await, "xenial");
+    async fn code_name_xenial() -> Result<(), std::io::Error> {
+        let test_suite = Suite::_Xenial;
+        assert_eq!(test_suite.code_name().await, "xenial");
         Ok(())
     }
 }
