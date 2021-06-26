@@ -15,17 +15,17 @@ impl Variant {
 
     pub async fn make_tarball(&self) -> &str {
         match self {
-            Variant::Minbase => "--make-tarball=/var/opt/attractor/minbase.tar.gz",
-            Variant::Buildd => "--make-tarball=/var/opt/attractor/buildd.tar.gz",
-            Variant::_Fakechroot => "--make-tarball=/var/opt/attractor/fakechroot.tar.gz",
+            Variant::Minbase => "--make-tarball=/var/opt/attractor/tmp/minbase.tar.gz",
+            Variant::Buildd => "--make-tarball=/var/opt/attractor/tmp/buildd.tar.gz",
+            Variant::_Fakechroot => "--make-tarball=/var/opt/attractor/tmp/fakechroot.tar.gz",
         }
     }
 
     pub async fn unpack_tarball(&self) -> &str {
         match self {
-            Variant::Minbase => "--unpack-tarball=/var/opt/attractor/minbase.tar.gz",
-            Variant::Buildd => "--unpack-tarball=/var/opt/attractor/buildd.tar.gz",
-            Variant::_Fakechroot => "--unpack-tarball=/var/opt/attractor/fakechroot.tar.gz",
+            Variant::Minbase => "--unpack-tarball=/var/opt/attractor/tmp/minbase.tar.gz",
+            Variant::Buildd => "--unpack-tarball=/var/opt/attractor/tmp/buildd.tar.gz",
+            Variant::_Fakechroot => "--unpack-tarball=/var/opt/attractor/tmp/fakechroot.tar.gz",
         }
     }
 }
@@ -60,7 +60,7 @@ mod tests {
         let test_variant_minbase = Variant::Minbase;
         assert_eq!(
             test_variant_minbase.make_tarball().await,
-            "--make-tarball=/var/opt/attractor/minbase.tar.gz",
+            "--make-tarball=/var/opt/attractor/tmp/minbase.tar.gz",
         );
         Ok(())
     }
@@ -70,7 +70,7 @@ mod tests {
         let test_variant_buildd = Variant::Buildd;
         assert_eq!(
             test_variant_buildd.make_tarball().await,
-            "--make-tarball=/var/opt/attractor/buildd.tar.gz",
+            "--make-tarball=/var/opt/attractor/tmp/buildd.tar.gz",
         );
         Ok(())
     }
@@ -80,7 +80,7 @@ mod tests {
         let test_variant_fakechroot = Variant::_Fakechroot;
         assert_eq!(
             test_variant_fakechroot.make_tarball().await,
-            "--make-tarball=/var/opt/attractor/fakechroot.tar.gz",
+            "--make-tarball=/var/opt/attractor/tmp/fakechroot.tar.gz",
         );
         Ok(())
     }
@@ -90,7 +90,7 @@ mod tests {
         let test_variant_minbase = Variant::Minbase;
         assert_eq!(
             test_variant_minbase.unpack_tarball().await,
-            "--unpack-tarball=/var/opt/attractor/minbase.tar.gz",
+            "--unpack-tarball=/var/opt/attractor/tmp/minbase.tar.gz",
         );
         Ok(())
     }
@@ -100,7 +100,7 @@ mod tests {
         let test_variant_buildd = Variant::Buildd;
         assert_eq!(
             test_variant_buildd.unpack_tarball().await,
-            "--unpack-tarball=/var/opt/attractor/buildd.tar.gz",
+            "--unpack-tarball=/var/opt/attractor/tmp/buildd.tar.gz",
         );
         Ok(())
     }
@@ -110,7 +110,7 @@ mod tests {
         let test_variant_fakechroot = Variant::_Fakechroot;
         assert_eq!(
             test_variant_fakechroot.unpack_tarball().await,
-            "--unpack-tarball=/var/opt/attractor/fakechroot.tar.gz",
+            "--unpack-tarball=/var/opt/attractor/tmp/fakechroot.tar.gz",
         );
         Ok(())
     }
