@@ -28,22 +28,30 @@ impl Attractor {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//
-//     #[tokio::test(flavor = "multi_thread")]
-//     async fn init() -> Result<(), std::io::Error> {
-//         let test_attractor = Attractor::init().await;
-//         assert!(test_attractor.is_ok());
-//         Ok(())
-//     }
-//
-//     #[tokio::test(flavor = "multi_thread")]
-//     async fn bootstrap() -> Result<(), std::io::Error> {
-//         let test_attractor = Attractor::init().await?;
-//         let test_attractor_bootstrap = test_attractor.bootstrap().await;
-//         assert!(test_attractor_bootstrap.is_ok());
-//         Ok(())
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn init() -> Result<(), std::io::Error> {
+        let test_attractor = Attractor::init().await;
+        assert!(test_attractor.is_ok());
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn bootstrap() -> Result<(), std::io::Error> {
+        let test_attractor = Attractor::init().await?;
+        let test_attractor_bootstrap = test_attractor.bootstrap().await;
+        assert!(test_attractor_bootstrap.is_ok());
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn install() -> Result<(), std::io::Error> {
+        let test_attractor = Attractor::init().await?;
+        let test_attractor_install = test_attractor.install().await;
+        assert!(test_attractor_install.is_ok());
+        Ok(())
+    }
+}
