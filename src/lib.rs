@@ -1,4 +1,5 @@
 mod bootstrap;
+mod chroot;
 mod init;
 mod install;
 mod language;
@@ -6,6 +7,7 @@ mod suite;
 mod utility;
 mod variant;
 
+pub use chroot::Chroot;
 pub use language::Language;
 pub use suite::Suite;
 pub use utility::Utility;
