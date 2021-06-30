@@ -3,6 +3,7 @@ use tokio::process::Command;
 pub enum Utility {
     AptGet,
     Debootstrap,
+    Tar,
     Wget,
 }
 
@@ -11,6 +12,7 @@ impl Utility {
         match self {
             Utility::AptGet => "apt-get",
             Utility::Debootstrap => "debootstrap",
+            Utility::Tar => "tar",
             Utility::Wget => "wget",
         }
     }
@@ -118,6 +120,13 @@ mod tests {
     }
 
     #[tokio::test(flavor = "multi_thread")]
+    async fn utility_tar_name() -> Result<(), std::io::Error> {
+        let test_utility = Utility::Tar;
+        assert_eq!(test_utility.name().await, "tar");
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
     async fn utility_wget_name() -> Result<(), std::io::Error> {
         let test_utility = Utility::Wget;
         assert_eq!(test_utility.name().await, "wget");
@@ -143,6 +152,14 @@ mod tests {
             test_utility_debootstrap_path.to_str().unwrap(),
             "/usr/sbin/debootstrap",
         );
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn utility_tar_path() -> Result<(), std::io::Error> {
+        let test_utility = Utility::Tar;
+        let test_utility_path = test_utility.path().await?;
+        assert_eq!(test_utility_path.to_str().unwrap(), "/bin/tar");
         Ok(())
     }
 
