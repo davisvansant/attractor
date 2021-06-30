@@ -3,6 +3,7 @@ use tokio::process::Command;
 pub enum Utility {
     AptGet,
     Debootstrap,
+    Wget,
 }
 
 impl Utility {
@@ -10,6 +11,7 @@ impl Utility {
         match self {
             Utility::AptGet => "apt-get",
             Utility::Debootstrap => "debootstrap",
+            Utility::Wget => "wget",
         }
     }
 
@@ -35,6 +37,10 @@ impl Utility {
                 println!("Utility - debootstrap cannot run update!");
                 Ok(false)
             }
+            _ => {
+                println!("{} cannot run apt-get update!", self.name().await);
+                Ok(false)
+            }
         }
     }
 
@@ -54,6 +60,10 @@ impl Utility {
                     .await?;
 
                 Ok(command.success())
+            }
+            _ => {
+                println!("{} is already installed!", self.name().await);
+                Ok(false)
             }
         }
     }
@@ -84,6 +94,16 @@ mod tests {
     }
 
     #[tokio::test(flavor = "multi_thread")]
+    async fn wget_update_and_install() -> Result<(), std::io::Error> {
+        let test_utility = Utility::Wget;
+        let test_update = test_utility.update().await?;
+        assert!(!test_update);
+        let test_install = test_utility.install().await?;
+        assert!(!test_install);
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
     async fn utility_apt_get_name() -> Result<(), std::io::Error> {
         let test_utility_apt_get = Utility::AptGet;
         assert_eq!(test_utility_apt_get.name().await, "apt-get");
@@ -94,6 +114,13 @@ mod tests {
     async fn utility_debootstrap_name() -> Result<(), std::io::Error> {
         let test_utility_debootstrap = Utility::Debootstrap;
         assert_eq!(test_utility_debootstrap.name().await, "debootstrap");
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn utility_wget_name() -> Result<(), std::io::Error> {
+        let test_utility = Utility::Wget;
+        assert_eq!(test_utility.name().await, "wget");
         Ok(())
     }
 
@@ -116,6 +143,14 @@ mod tests {
             test_utility_debootstrap_path.to_str().unwrap(),
             "/usr/sbin/debootstrap",
         );
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn utility_wget_path() -> Result<(), std::io::Error> {
+        let test_utility = Utility::Wget;
+        let test_utility_path = test_utility.path().await?;
+        assert_eq!(test_utility_path.to_str().unwrap(), "/usr/bin/wget");
         Ok(())
     }
 }
