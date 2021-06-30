@@ -74,22 +74,22 @@ mod tests {
         test_language.release("1.49.0").await;
     }
 
-    #[tokio::test(flavor = "multi_thread")]
-    async fn language_rust_downloadand_extract() -> Result<(), std::io::Error> {
-        let test_language = Language::Rust;
-        let test_release = test_language.release("1.53.0").await;
-        let test_language_download = test_language.download(test_release).await?;
-        assert!(test_language_download);
-        let test_download = "/var/opt/attractor/tmp/rust-1.53.0-x86_64-unknown-linux-gnu.tar.gz";
-        let test_metadata_target = tokio::fs::metadata(test_download).await?;
-        assert!(test_metadata_target.is_file());
-        let test_suite = Suite::Buster;
-        let test_language_extract = test_language.extract(test_release, &test_suite).await?;
-        assert!(test_language_extract);
-        let test_language_extract_path =
-            "/var/opt/attractor/buildd/buster/rust-1.53.0-x86_64-unknown-linux-gnu";
-        let test_metadata_target = tokio::fs::metadata(test_language_extract_path).await?;
-        assert!(test_metadata_target.is_dir());
-        Ok(())
-    }
+    // #[tokio::test(flavor = "multi_thread")]
+    // async fn language_rust_downloadand_extract() -> Result<(), std::io::Error> {
+    //     let test_language = Language::Rust;
+    //     let test_release = test_language.release("1.53.0").await;
+    //     let test_language_download = test_language.download(test_release).await?;
+    //     assert!(test_language_download);
+    //     let test_download = "/var/opt/attractor/tmp/rust-1.53.0-x86_64-unknown-linux-gnu.tar.gz";
+    //     let test_metadata_target = tokio::fs::metadata(test_download).await?;
+    //     assert!(test_metadata_target.is_file());
+    //     let test_suite = Suite::Buster;
+    //     let test_language_extract = test_language.extract(test_release, &test_suite).await?;
+    //     assert!(test_language_extract);
+    //     let test_language_extract_path =
+    //         "/var/opt/attractor/buildd/buster/rust-1.53.0-x86_64-unknown-linux-gnu";
+    //     let test_metadata_target = tokio::fs::metadata(test_language_extract_path).await?;
+    //     assert!(test_metadata_target.is_dir());
+    //     Ok(())
+    // }
 }
