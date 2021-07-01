@@ -2,6 +2,7 @@ use tokio::process::Command;
 
 pub enum Utility {
     AptGet,
+    Chroot,
     Debootstrap,
     Tar,
     Wget,
@@ -11,6 +12,7 @@ impl Utility {
     pub async fn name(&self) -> &str {
         match self {
             Utility::AptGet => "apt-get",
+            Utility::Chroot => "chroot",
             Utility::Debootstrap => "debootstrap",
             Utility::Tar => "tar",
             Utility::Wget => "wget",
@@ -86,6 +88,16 @@ mod tests {
     }
 
     #[tokio::test(flavor = "multi_thread")]
+    async fn chroot_update_and_install() -> Result<(), std::io::Error> {
+        let test_utility = Utility::Chroot;
+        let test_chroot_update = test_utility.update().await?;
+        assert!(!test_chroot_update);
+        let test_chroot_install = test_utility.install().await?;
+        assert!(!test_chroot_install);
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
     async fn debootstrap_update_and_install() -> Result<(), std::io::Error> {
         let test_utility = Utility::Debootstrap;
         let test_debootstrap_update = test_utility.update().await?;
@@ -109,6 +121,13 @@ mod tests {
     async fn utility_apt_get_name() -> Result<(), std::io::Error> {
         let test_utility_apt_get = Utility::AptGet;
         assert_eq!(test_utility_apt_get.name().await, "apt-get");
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn utility_chroot_name() -> Result<(), std::io::Error> {
+        let test_utility_chroot = Utility::Chroot;
+        assert_eq!(test_utility_chroot.name().await, "chroot");
         Ok(())
     }
 
@@ -140,6 +159,17 @@ mod tests {
         assert_eq!(
             test_utility_apt_get_path.to_str().unwrap(),
             "/usr/bin/apt-get",
+        );
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn utility_chroot_path() -> Result<(), std::io::Error> {
+        let test_utility_chroot = Utility::Chroot;
+        let test_utility_chroot_path = test_utility_chroot.path().await?;
+        assert_eq!(
+            test_utility_chroot_path.to_str().unwrap(),
+            "/usr/sbin/chroot",
         );
         Ok(())
     }
