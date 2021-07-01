@@ -3,6 +3,8 @@ use crate::Suite;
 use std::path::PathBuf;
 use std::str::FromStr;
 
+use tokio::process::Command;
+
 pub struct Chroot {
     pub directory: PathBuf,
 }
@@ -13,6 +15,17 @@ impl Chroot {
         let directory = PathBuf::from_str(path)?;
 
         Ok(Chroot { directory })
+    }
+
+    pub async fn run(&self, _command: &str) -> Result<bool, std::io::Error> {
+        let run = Command::new("chroot")
+            .arg("/bin/echo")
+            .arg("hello")
+            .current_dir("/var/opt/attractor/buildd")
+            .status()
+            .await?;
+
+        Ok(run.success())
     }
 }
 
@@ -65,6 +78,16 @@ mod tests {
             test_chroot.unwrap().directory.to_str().unwrap(),
             "/var/opt/attractor/buildd/xenial",
         );
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn run() -> Result<(), Box<dyn std::error::Error>> {
+        tokio::fs::create_dir_all("/var/opt/attractor/buildd").await?;
+        let test_suite = Suite::Buster;
+        let test_chroot = Chroot::build(test_suite).await?;
+        let test_run = test_chroot.run("todo").await?;
+        assert!(!test_run);
         Ok(())
     }
 }
