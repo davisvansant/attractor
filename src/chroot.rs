@@ -1,4 +1,4 @@
-use crate::Suite;
+use crate::{Suite, Utility};
 
 use std::path::PathBuf;
 use std::str::FromStr;
@@ -18,7 +18,8 @@ impl Chroot {
     }
 
     pub async fn run(&self, _command: &str) -> Result<bool, std::io::Error> {
-        let run = Command::new("chroot")
+        let chroot = Utility::Chroot.path().await?;
+        let run = Command::new(&chroot)
             .arg("/bin/echo")
             .arg("hello")
             .current_dir("/var/opt/attractor/buildd")
