@@ -5,6 +5,8 @@ use std::str::FromStr;
 
 use tokio::process::Command;
 
+pub enum ChrootCommand {}
+
 pub struct Chroot {
     pub directory: PathBuf,
 }
