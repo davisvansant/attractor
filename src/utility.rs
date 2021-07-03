@@ -37,10 +37,10 @@ impl Utility {
                 let command = Command::new(command_path).arg("update").status().await?;
                 Ok(command.success())
             }
-            Utility::Debootstrap => {
-                println!("Utility - debootstrap cannot run update!");
-                Ok(false)
-            }
+            // Utility::Debootstrap => {
+            //     println!("Utility - debootstrap cannot run update!");
+            //     Ok(false)
+            // }
             _ => {
                 println!("{} cannot run apt-get update!", self.name().await);
                 Ok(false)
@@ -50,10 +50,10 @@ impl Utility {
 
     pub async fn install(&self) -> Result<bool, std::io::Error> {
         match self {
-            Utility::AptGet => {
-                println!("Utility - apt-get is already installed!");
-                Ok(false)
-            }
+            // Utility::AptGet => {
+            //     println!("Utility - apt-get is already installed!");
+            //     Ok(false)
+            // }
             Utility::Debootstrap => {
                 let command_path = Utility::AptGet.path().await?;
                 let command = Command::new(command_path)
