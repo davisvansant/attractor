@@ -21,10 +21,11 @@ impl Chroot {
 
     pub async fn run(&self, _command: &str) -> Result<bool, std::io::Error> {
         let chroot = Utility::Chroot.path().await?;
+        let new_root = &self.directory;
         let run = Command::new(&chroot)
+            .arg(&new_root)
             .arg("/bin/echo")
             .arg("hello")
-            .current_dir("/var/opt/attractor/buildd")
             .status()
             .await?;
 
@@ -86,7 +87,7 @@ mod tests {
 
     #[tokio::test(flavor = "multi_thread")]
     async fn run() -> Result<(), Box<dyn std::error::Error>> {
-        tokio::fs::create_dir_all("/var/opt/attractor/buildd").await?;
+        tokio::fs::create_dir_all("/var/opt/attractor/buildd/buster").await?;
         let test_suite = Suite::Buster;
         let test_chroot = Chroot::build(test_suite).await?;
         let test_run = test_chroot.run("todo").await?;
