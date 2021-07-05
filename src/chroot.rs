@@ -5,7 +5,17 @@ use std::str::FromStr;
 
 use tokio::process::Command;
 
-pub enum ChrootCommand {}
+pub enum ChrootCommand {
+    Echo,
+}
+
+impl ChrootCommand {
+    pub async fn name(&self) -> &str {
+        match self {
+            ChrootCommand::Echo => "echo",
+        }
+    }
+}
 
 pub struct Chroot {
     pub directory: PathBuf,
@@ -19,12 +29,13 @@ impl Chroot {
         Ok(Chroot { directory })
     }
 
-    pub async fn run(&self, _command: &str) -> Result<bool, std::io::Error> {
+    pub async fn run(&self, command: &ChrootCommand) -> Result<bool, std::io::Error> {
         let chroot = Utility::Chroot.path().await?;
         let new_root = &self.directory;
+        let command_name = command.name().await;
         let run = Command::new(&chroot)
             .arg(&new_root)
-            .arg("/bin/echo")
+            .arg(command_name)
             .arg("hello")
             .status()
             .await?;
@@ -90,7 +101,8 @@ mod tests {
         tokio::fs::create_dir_all("/var/opt/attractor/buildd/buster").await?;
         let test_suite = Suite::Buster;
         let test_chroot = Chroot::build(test_suite).await?;
-        let test_run = test_chroot.run("todo").await?;
+        let test_chroot_command = ChrootCommand::Echo;
+        let test_run = test_chroot.run(&test_chroot_command).await?;
         assert!(!test_run);
         Ok(())
     }
