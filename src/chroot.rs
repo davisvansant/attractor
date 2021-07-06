@@ -29,14 +29,14 @@ impl Chroot {
         Ok(Chroot { directory })
     }
 
-    pub async fn run(&self, command: &ChrootCommand) -> Result<bool, std::io::Error> {
+    pub async fn run(&self, command: &ChrootCommand, arg: &str) -> Result<bool, std::io::Error> {
         let chroot = Utility::Chroot.path().await?;
         let new_root = &self.directory;
         let command_name = command.name().await;
         let run = Command::new(&chroot)
             .arg(&new_root)
             .arg(command_name)
-            .arg("hello")
+            .arg(arg)
             .status()
             .await?;
 
@@ -102,7 +102,7 @@ mod tests {
         let test_suite = Suite::Buster;
         let test_chroot = Chroot::build(test_suite).await?;
         let test_chroot_command = ChrootCommand::Echo;
-        let test_run = test_chroot.run(&test_chroot_command).await?;
+        let test_run = test_chroot.run(&test_chroot_command, "todo").await?;
         assert!(!test_run);
         Ok(())
     }
