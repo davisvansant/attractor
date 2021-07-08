@@ -5,17 +5,9 @@ use std::str::FromStr;
 
 use tokio::process::Command;
 
-pub enum ChrootCommand {
-    Echo,
-}
+mod chroot_command;
 
-impl ChrootCommand {
-    pub async fn name(&self) -> &str {
-        match self {
-            ChrootCommand::Echo => "echo",
-        }
-    }
-}
+pub use chroot_command::ChrootCommand;
 
 pub struct Chroot {
     pub directory: PathBuf,
