@@ -3,6 +3,7 @@ use crate::{Suite, Utility};
 use std::path::PathBuf;
 use std::str::FromStr;
 
+use tokio::fs::remove_dir_all;
 use tokio::process::Command;
 
 mod chroot_command;
@@ -33,6 +34,12 @@ impl Chroot {
             .await?;
 
         Ok(run.success())
+    }
+
+    pub async fn cleanup(&self) -> Result<(), std::io::Error> {
+        remove_dir_all(&self.directory).await?;
+
+        Ok(())
     }
 }
 
@@ -96,6 +103,18 @@ mod tests {
         let test_chroot_command = ChrootCommand::Echo;
         let test_run = test_chroot.run(&test_chroot_command, "todo").await?;
         assert!(!test_run);
+        Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread")]
+    async fn cleanup() -> Result<(), Box<dyn std::error::Error>> {
+        tokio::fs::create_dir_all("/var/opt/attractor/buildd/buster").await?;
+        let test_suite = Suite::Buster;
+        let test_chroot = Chroot::build(test_suite).await?;
+        let test_chroot_cleanup = test_chroot.cleanup().await;
+        assert!(test_chroot_cleanup.is_ok());
+        let test_metadata = tokio::fs::metadata(test_chroot.directory).await;
+        assert!(test_metadata.is_err());
         Ok(())
     }
 }
