@@ -26,8 +26,8 @@ impl Chroot {
         let chroot = Utility::Chroot.path().await?;
         let new_root = &self.directory;
         let command_name = command.name().await;
-        let run = Command::new(&chroot)
-            .arg(&new_root)
+        let run = Command::new(chroot)
+            .arg(new_root)
             .arg(command_name)
             .arg(arg)
             .status()
